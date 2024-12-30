@@ -42,24 +42,26 @@ const createAdEmbed = () => {
       .setThumbnail('https://i.imgur.com/x7ORbOL.png')
       .setDescription(
         'Este é um aviso importante e será **enviado apenas uma vez**. Não **contém links ou material malicioso**.\n\n' +
-        'Estamos entusiasmados em anunciar a abertura oficial do **Vanguard RP**, um servidor de Roleplay com muitas opções de interação para os jogadores!'
+        'Estamos entusiasmados em anunciar a abertura oficial do **Vanguard RP**, um servidor de Roleplay diferente!'
       )
       .addFields(
         { name: '💼 Negócios e Carreiras', value: 'Cria o teu próprio negócio, gere uma empresa e aumenta o teu império. O que tu constróis, depende de ti. Faz parte de uma entidade governamental, e ajuda a cidade.' },
         { name: '💀 Armas e Organizações', value: 'Mergulha no mundo das organizações ilegais e cria a tua própria rede criminosa.\nPersonaliza o teu equipamento e cria as tuas próprias armas através do sistema de crafting.' },
+        { name: '💎 Discord Oficial', value: 'https://discord.gg/9qJRhbjFKk' },
+        { name: '🪙 Tebex Oficial', value: 'https://vanguardrp.tebex.io/' },
       )
       .setTimestamp()
       .setFooter({ text: 'Vanguard RP', iconURL: client.user.displayAvatarURL() });
 
     const invite = new ButtonBuilder()
-      .setLabel('Entrar no Discord')
+      .setLabel('👑 Entrar no Discord')
       .setStyle(ButtonStyle.Link)
       .setURL('https://discord.gg/9qJRhbjFKk');
 
     const trailer = new ButtonBuilder()
-      .setLabel('Ver Trailer')
+      .setLabel('🚀 Ver Alguns Scripts')
       .setStyle(ButtonStyle.Link)
-      .setURL('https://www.youtube.com/watch?v=Ge7cC8gBtE4&pp=ygUNZml2ZW0gdHJhb2xlcg%3D%3D');
+      .setURL('https://www.youtube.com/watch?v=Xlk1DOYvxEY');
 
       const row = new ActionRowBuilder().addComponents(invite, trailer);
 
@@ -105,16 +107,19 @@ client.on('messageCreate', async (message) => {
       const guild = await client.guilds.fetch(TARGET_GUILD_ID);
       const members = await guild.members.fetch();
 
-      members.forEach(async (member) => {
-        if (!member.user.bot) {
+      const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+      members.forEach(async (member, index) => {
+        if (!member.user.bot && failedUsernames.includes(member.user.username)) {
           try {
+            await delay(index * 1500);
             await member.send(createAdEmbed());
             console.log(`✅ DM sent to ${member.user.tag}`);
           } catch (err) {
             if (err.code === 50007) {
               console.error(`❌ Failed to send DM to ${member.user.tag}, DMs disabled or has blocked the bot`);
             } else {
-              console.error(`❌ Failed to send DM to ${member.user.tag}`);
+              console.error(`❌ Failed to send DM to ${member.user.tag}:`, err);
             }
           }
         }
